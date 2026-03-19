@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI NEXUS — System Monitor</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<header>
+  <div class="logo">AI <span>NEXUS</span></div>
+  <div class="header-right">
+    <div class="conn-pill"><div class="dot" id="h-lan-dot"></div><span id="h-lan-lbl">LAN LINK</span></div>
+    <div class="conn-pill"><div class="dot" id="h-net-dot"></div><span>INTERNET</span></div>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+</header>
+
+<div class="main">
+  <!-- miniPC -->
+  <div class="room">
+    <div class="room-header">
+      <div style="color:var(--cyan);text-shadow:var(--glow-cyan);font-family:'Orbitron',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.15em">⬡ miniPC — NODE-A</div>
+      <div class="room-badges">
+        <div class="badge badge-cyan">Intel N100 · 16GB</div>
+        <div class="badge badge-online">ONLINE</div>
+      </div>
+    </div>
+    <div class="scene" id="scene-a">
+      <div class="zone-lbl zone-work" style="color:var(--cyan)">WORK ZONE</div>
+      <div class="zone-lbl zone-chill" style="color:#2a4a80">CHILL ZONE</div>
+      <div class="desk-obj desk-a">
+        <div class="desk-surface">
+          <div class="monitor monitor-a"><div class="scan-line scan-a"></div></div>
+          <div class="desk-leg desk-leg-l"></div><div class="desk-leg desk-leg-r"></div>
+        </div>
+      </div>
+      <div class="robot robot-work working" id="robot-a">
+        <svg viewBox="0 0 38 58" width="36" height="54" xmlns="http://www.w3.org/2000/svg">
+          <rect x="9" y="5" width="20" height="16" rx="4" fill="#061520" stroke="#00f5ff" stroke-width="1.4"/>
+          <g class="bot-eye"><rect x="11" y="10" width="6" height="4" rx="1.5" fill="#00f5ff" opacity=".9"/><rect x="21" y="10" width="6" height="4" rx="1.5" fill="#00f5ff" opacity=".9"/></g>
+          <line x1="19" y1="5" x2="19" y2="1" stroke="#00f5ff" stroke-width="1.5"/><circle cx="19" cy="1" r="1.8" fill="#00f5ff"/>
+          <rect x="7" y="21" width="24" height="22" rx="4" fill="#061520" stroke="#00f5ff" stroke-width="1.4"/>
+          <rect x="12" y="26" width="14" height="9" rx="2" fill="#001525" stroke="#00f5ff" stroke-width=".7" opacity=".8"/>
+          <rect x="14" y="28" width="10" height="5" rx="1" class="chest-light" fill="#00f5ff"/>
+          <rect class="arm-l" x="0" y="22" width="7" height="13" rx="3" fill="#061520" stroke="#00f5ff" stroke-width="1.2"/>
+          <rect class="arm-r" x="31" y="22" width="7" height="13" rx="3" fill="#061520" stroke="#00f5ff" stroke-width="1.2"/>
+          <rect x="11" y="43" width="7" height="11" rx="3" fill="#061520" stroke="#00f5ff" stroke-width="1.2"/>
+          <rect x="20" y="43" width="7" height="11" rx="3" fill="#061520" stroke="#00f5ff" stroke-width="1.2"/>
+          <rect x="9" y="52" width="9" height="4" rx="2" fill="#00f5ff" opacity=".55"/>
+          <rect x="20" y="52" width="9" height="4" rx="2" fill="#00f5ff" opacity=".55"/>
+        </svg>
+      </div>
+      <div class="couch-obj">
+        <div class="couch-body"><div class="couch-arm-l"></div><div class="couch-arm-r"></div><div class="couch-cushion"></div></div>
+      </div>
+      <div class="floor floor-a"></div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-lbl">CPU</div><div class="stat-val v-cyan" id="a-cpu">--</div><div class="bar-track"><div class="bar-fill b-cyan" id="a-cpu-b" style="width:0%"></div></div></div>
+      <div class="stat"><div class="stat-lbl">RAM</div><div class="stat-val v-green" id="a-ram">--</div><div class="bar-track"><div class="bar-fill b-green" id="a-ram-b" style="width:0%"></div></div></div>
+      <div class="stat"><div class="stat-lbl">TEMP CPU</div><div class="stat-val v-orange" id="a-temp">--</div><div class="bar-track"><div class="bar-fill b-orange" id="a-temp-b" style="width:0%"></div></div></div>
+      <div class="stat"><div class="stat-lbl">DISCO</div><div class="stat-val v-cyan" id="a-disk">--</div><div class="bar-track"><div class="bar-fill b-cyan" id="a-disk-b" style="width:0%"></div></div></div>
+    </div>
+    <!-- SERVERS -->
+    <div class="servers-panel">
+      <div class="servers-title">⬡ SERVIDORES DE PROJECTO</div>
+      <div class="server-row"><div class="srv-dot srv-on"></div><div class="srv-name">🤖 OpenClaw b0b</div><div class="srv-port">:11434</div><div class="srv-status ss-on">RUNNING</div><div class="srv-uptime" id="srv-bob-up">00:00:00</div></div>
+      <div class="server-row"><div class="srv-dot srv-on"></div><div class="srv-name">🧠 Ollama API</div><div class="srv-port">:11435</div><div class="srv-status ss-on">RUNNING</div><div class="srv-uptime" id="srv-ollama-up">00:00:00</div></div>
+      <div class="server-row"><div class="srv-dot srv-idle"></div><div class="srv-name">⚙️ n8n Workflows</div><div class="srv-port">:5678</div><div class="srv-status ss-idle">IDLE</div><div class="srv-uptime" id="srv-n8n-up">00:00:00</div></div>
+      <div class="server-row"><div class="srv-dot srv-on"></div><div class="srv-name">📚 RAG / Qdrant</div><div class="srv-port">:6333</div><div class="srv-status ss-on">RUNNING</div><div class="srv-uptime" id="srv-rag-up">00:00:00</div></div>
+      <div class="server-row"><div class="srv-dot srv-on"></div><div class="srv-name">📊 AI Nexus Dashboard</div><div class="srv-port">:3000</div><div class="srv-status ss-on">RUNNING</div><div class="srv-uptime" id="srv-dash-up">00:00:00</div></div>
+      <div class="server-row"><div class="srv-dot srv-off"></div><div class="srv-name">🔍 Brave Search Proxy</div><div class="srv-port">:8080</div><div class="srv-status ss-off">STOPPED</div><div class="srv-uptime">--</div></div>
+    </div>
+  </div>
+
+  <!-- DESKTOP -->
+  <div class="room">
+    <div class="room-header">
+      <div style="color:var(--green);text-shadow:var(--glow-green);font-family:'Orbitron',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.15em">⬡ DESKTOP — NODE-B</div>
+      <div class="room-badges">
+        <div class="badge badge-green">Ryzen 7 · 32GB · RTX</div>
+        <div class="badge badge-sleep" id="b-badge">SLEEPING</div>
+      </div>
+    </div>
+    <div class="scene" id="scene-b">
+      <div class="zone-lbl zone-work" style="color:var(--green)">WORK ZONE</div>
+      <div class="zone-lbl zone-chill" style="color:#1a4030">CHILL ZONE</div>
+      <div class="desk-obj desk-b">
+        <div class="desk-surface">
+          <div class="monitor monitor-b"><div class="scan-line scan-b"></div></div>
+          <div class="desk-leg desk-leg-l" style="background:#051510"></div><div class="desk-leg desk-leg-r" style="background:#051510"></div>
+        </div>
+      </div>
+      <div class="robot robot-chill chilling" id="robot-b">
+        <svg viewBox="0 0 38 58" width="36" height="54" xmlns="http://www.w3.org/2000/svg">
+          <rect x="9" y="5" width="20" height="16" rx="4" fill="#030f08" stroke="#00ff88" stroke-width="1.4"/>
+          <g class="bot-eye"><rect x="11" y="10" width="6" height="4" rx="1.5" fill="#00ff88" opacity=".9"/><rect x="21" y="10" width="6" height="4" rx="1.5" fill="#00ff88" opacity=".9"/></g>
+          <line x1="19" y1="5" x2="19" y2="1" stroke="#00ff88" stroke-width="1.5"/><circle cx="19" cy="1" r="1.8" fill="#00ff88"/>
+          <rect x="7" y="21" width="24" height="22" rx="4" fill="#030f08" stroke="#00ff88" stroke-width="1.4"/>
+          <rect x="12" y="26" width="14" height="9" rx="2" fill="#001508" stroke="#00ff88" stroke-width=".7" opacity=".8"/>
+          <rect x="14" y="28" width="10" height="5" rx="1" class="chest-light" fill="#00ff88" style="animation-delay:.8s"/>
+          <rect class="arm-l" x="0" y="22" width="7" height="13" rx="3" fill="#030f08" stroke="#00ff88" stroke-width="1.2"/>
+          <rect class="arm-r" x="31" y="22" width="7" height="13" rx="3" fill="#030f08" stroke="#00ff88" stroke-width="1.2"/>
+          <rect x="11" y="43" width="7" height="11" rx="3" fill="#030f08" stroke="#00ff88" stroke-width="1.2"/>
+          <rect x="20" y="43" width="7" height="11" rx="3" fill="#030f08" stroke="#00ff88" stroke-width="1.2"/>
+          <rect x="9" y="52" width="9" height="4" rx="2" fill="#00ff88" opacity=".55"/>
+          <rect x="20" y="52" width="9" height="4" rx="2" fill="#00ff88" opacity=".55"/>
+        </svg>
+      </div>
+      <div class="couch-obj">
+        <div class="couch-body" style="background:linear-gradient(180deg,#081520,#040c14);border-color:#102030">
+          <div class="couch-arm-l" style="background:#081520;border-color:#102030"></div>
+          <div class="couch-arm-r" style="background:#081520;border-color:#102030"></div>
+          <div class="couch-cushion" style="background:#0f1a28;border-color:#152030"></div>
+        </div>
+      </div>
+      <div class="floor floor-b"></div>
+      <div class="overlay" id="b-overlay">
+        <div class="overlay-title" style="color:var(--orange)">SLEEPING</div>
+        <div class="overlay-sub">WAKE-ON-LAN DISPONÍVEL</div>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-lbl">CPU</div><div class="stat-val v-cyan" id="b-cpu">--</div><div class="bar-track"><div class="bar-fill b-cyan" id="b-cpu-b" style="width:0%"></div></div></div>
+      <div class="stat"><div class="stat-lbl">RAM</div><div class="stat-val v-green" id="b-ram">--</div><div class="bar-track"><div class="bar-fill b-green" id="b-ram-b" style="width:0%"></div></div></div>
+      <div class="stat"><div class="stat-lbl">GPU TEMP</div><div class="stat-val v-orange" id="b-temp">--</div><div class="bar-track"><div class="bar-fill b-orange" id="b-temp-b" style="width:0%"></div></div></div>
+      <div class="stat"><div class="stat-lbl">DISCO</div><div class="stat-val v-cyan" id="b-disk">--</div><div class="bar-track"><div class="bar-fill b-cyan" id="b-disk-b" style="width:0%"></div></div></div>
+    </div>
+    <div class="desk-controls">
+      <button class="ctrl-btn btn-wol" id="wol-btn" onclick="wakeDesktop()">⚡ WAKE ON LAN</button>
+      <button class="ctrl-btn btn-off" id="off-btn" onclick="shutdownDesktop()" disabled>⏻ SHUTDOWN</button>
+      <div class="auto-off-badge" id="auto-off-badge" style="display:none">
+        <span class="blink">⚠</span> AUTO-OFF EM <strong id="auto-off-timer">15</strong> MIN
+      </div>
+    </div>
+  </div>
+
+  <!-- BRIDGE -->
+  <div class="bridge">
+    <div class="bridge-node">◉ NODE-A</div>
+    <div class="bridge-line"><div class="bridge-pkt" id="pkt1"></div><div class="bridge-pkt bridge-pkt2" id="pkt2"></div></div>
+    <div class="bridge-center">
+      <div class="bridge-sub">LAN BRIDGE</div>
+      <div class="bridge-lat" id="bridge-lat">-- ms</div>
+      <div class="bridge-sub" id="bridge-status">STANDBY</div>
+    </div>
+    <div class="bridge-line" style="transform:scaleX(-1)"><div class="bridge-pkt"></div><div class="bridge-pkt bridge-pkt2"></div></div>
+    <div class="bridge-node" style="text-align:right">NODE-B ◉</div>
+  </div>
+</div>
+
+<!-- BOTTOM -->
+<div class="bottom">
+  <div class="panel">
+    <div class="panel-title">⬡ OLLAMA — MODELOS ATIVOS</div>
+    <div class="model-row"><div class="model-dot dot-on"></div><div class="model-name">llama3.2:3b</div><div class="model-machine">NODE-A</div><div class="model-size">2.0 GB</div></div>
+    <div class="model-row"><div class="model-dot dot-on"></div><div class="model-name">nomic-embed-text</div><div class="model-machine">NODE-A</div><div class="model-size">274 MB</div></div>
+    <div class="model-row" style="opacity:.4"><div class="model-dot dot-off"></div><div class="model-name">mixtral:8x7b</div><div class="model-machine">NODE-B</div><div class="model-size">26 GB</div></div>
+    <div class="model-row" style="opacity:.4"><div class="model-dot dot-off"></div><div class="model-name">deepseek-r1:14b</div><div class="model-machine">NODE-B</div><div class="model-size">9.0 GB</div></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">☁ OLLAMA CLOUD — LIMITES</div>
+    <div class="api-row"><div class="api-hdr"><span class="api-name">Requests / Hora</span><span class="api-count" id="ol-rph">-- / 100</span></div><div class="api-track"><div class="api-fill b-cyan" id="ol-rph-b" style="width:0%"></div></div><div class="api-reset-lbl">Reset em: <span id="ol-rph-reset">--:--</span></div></div>
+    <div class="api-row"><div class="api-hdr"><span class="api-name">Requests / Dia</span><span class="api-count" id="ol-rpd">-- / 1000</span></div><div class="api-track"><div class="api-fill b-green" id="ol-rpd-b" style="width:0%"></div></div><div class="api-reset-lbl">Reset em: <span id="ol-rpd-reset">--:--:--</span></div></div>
+    <div class="api-row"><div class="api-hdr"><span class="api-name">Tokens / Min</span><span class="api-count" id="ol-tpm">-- / 10k</span></div><div class="api-track"><div class="api-fill b-orange" id="ol-tpm-b" style="width:0%"></div></div><div class="api-reset-lbl">Janela contínua</div></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">🔍 BRAVE SEARCH — LIMITES</div>
+    <div class="api-row"><div class="api-hdr"><span class="api-name">Queries / Mês (Free)</span><span class="api-count" id="bv-rpm">-- / 2000</span></div><div class="api-track"><div class="api-fill b-cyan" id="bv-rpm-b" style="width:0%"></div></div><div class="api-reset-lbl">Reset: dia 1 do mês</div></div>
+    <div class="api-row"><div class="api-hdr"><span class="api-name">Queries / Segundo</span><span class="api-count" id="bv-rps">-- / 1</span></div><div class="api-track"><div class="api-fill b-green" id="bv-rps-b" style="width:0%"></div></div><div class="api-reset-lbl">Rate limited</div></div>
+    <div class="divider"></div>
+    <div style="font-size:.62rem;color:var(--dim)">RESTANTES ESTE MÊS</div>
+    <div class="big-number" id="bv-remaining">1 847</div>
+  </div>
+</div>
+
+<!-- BOB CHAT -->
+<div class="chat-section">
+  <div class="chat-wrapper">
+    <div class="chat-header">
+      <div class="bob-avatar">
+        <svg viewBox="0 0 40 40" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="19" fill="#061520" stroke="#00f5ff" stroke-width="1.5"/>
+          <rect x="12" y="11" width="16" height="11" rx="3" fill="#061520" stroke="#00f5ff" stroke-width="1.2"/>
+          <rect x="14" y="14" width="5" height="3" rx="1" fill="#00f5ff" opacity=".9"/>
+          <rect x="21" y="14" width="5" height="3" rx="1" fill="#00f5ff" opacity=".9"/>
+          <rect x="9" y="22" width="22" height="13" rx="4" fill="#061520" stroke="#00f5ff" stroke-width="1.2"/>
+          <rect x="14" y="25" width="12" height="5" rx="1.5" fill="#001525" stroke="#00f5ff" stroke-width=".6"/>
+          <rect x="16" y="26.5" width="8" height="2" rx="1" fill="#00f5ff" opacity=".8" class="chest-light"/>
+        </svg>
+        <div class="bob-ring"></div>
+        <div class="bob-status-dot"></div>
+      </div>
+      <div class="chat-header-info">
+        <div class="bob-name">b0b — OpenClaw Agent</div>
+        <div class="bob-sub">NODE-A · miniPC · Ollama llama3.2:3b · <span>ONLINE</span></div>
+      </div>
+      <div class="chat-hdr-badges">
+        <div class="badge badge-cyan">OPENCLAW</div>
+        <div class="badge" style="border-color:var(--purple);color:var(--purple)">AI POWERED</div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chat-input" rows="1"
+        placeholder="Fala com o b0b... (Enter envia, Shift+Enter nova linha)"
+        onkeydown="handleKey(event)"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">ENVIAR ▶</button>
+    </div>
+    <div class="chat-hint">b0b conhece o estado do teu setup em tempo real · powered by Anthropic API</div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
