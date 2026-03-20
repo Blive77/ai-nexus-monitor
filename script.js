@@ -5,11 +5,18 @@ const S = {
   chatHistory:[], bobTyping:false,
 };
 
+function togglePanel(id) {
+  const el = document.getElementById(id);
+  const btn = document.getElementById('btn-' + id);
+  if (el) el.classList.toggle('collapsed-content');
+  if (btn) btn.textContent = el.classList.contains('collapsed-content') ? '▶' : '▼';
+}
+
 // Uptime counters
 const srvStart = Date.now();
 setInterval(()=>{
   const elapsed = Math.floor((Date.now()-srvStart)/1000);
-  ['bob','ollama','n8n','rag','dash'].forEach(k => S.srvUptimes[k] = elapsed);
+  Object.keys(S.srvUptimes).forEach(k => S.srvUptimes[k] = elapsed);
   updateUptimes();
 },1000);
 
@@ -18,7 +25,7 @@ function fmtUptime(s){
   return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${ss.toString().padStart(2,'0')}`;
 }
 function updateUptimes(){
-  ['bob','ollama','n8n','rag','dash'].forEach(k=>{
+  Object.keys(S.srvUptimes).forEach(k=>{
     const el=document.getElementById('srv-'+k+'-up');
     if(el) el.textContent=fmtUptime(S.srvUptimes[k]);
   });
@@ -60,7 +67,7 @@ function setTempStat(vId,bId,temp,max){
 }
 // ─── Coloca o IP do teu miniPC aqui ───────────────
 const MINIPC_IP = "192.168.1.28";
-const STATS_URL = `http://${MINIPC_IP}:9090/stats`;
+const STATS_URL = `http://${MINIPC_IP}/stats`;
 
 async function updateA() {
   try {
@@ -70,6 +77,34 @@ async function updateA() {
     setStatBar('a-ram','a-ram-b', d.ram, '%', 'v-green');
     setTempStat('a-temp','a-temp-b', d.temp, 90);
     setStatBar('a-disk','a-disk-b', d.disk, '%', 'v-cyan');
+    if (d.system_services) {
+      const pContainer = document.getElementById('dynamic-services');
+      if (pContainer) {
+        pContainer.innerHTML = '';
+        d.system_services.forEach(p => {
+          if (S.srvUptimes[p.id] === undefined && p.status === 'RUNNING') S.srvUptimes[p.id] = 0;
+          if (p.status === 'STOPPED') delete S.srvUptimes[p.id];
+          const dotClass = p.status === 'RUNNING' ? 'srv-on' : 'srv-off';
+          const statClass= p.status === 'RUNNING' ? 'ss-on' : 'ss-off';
+          const upStr = p.status === 'RUNNING' ? `<div class="srv-uptime" id="srv-${p.id}-up">${fmtUptime(S.srvUptimes[p.id])}</div>` : '<div class="srv-uptime">--</div>';
+          pContainer.innerHTML += `<div class="server-row"><div class="srv-dot ${dotClass}"></div><div class="srv-name">${p.name}</div><div class="srv-port">${p.port}</div><div class="srv-status ${statClass}">${p.status}</div>${upStr}</div>`;
+        });
+      }
+    }
+    if (d.nginx_projects) {
+      const c = document.getElementById('dynamic-servers');
+      if (c) {
+        c.innerHTML = '';
+        d.nginx_projects.forEach(p => {
+          if (S.srvUptimes[p.name] === undefined && p.status === 'RUNNING') S.srvUptimes[p.name] = 0;
+          if (p.status === 'STOPPED') delete S.srvUptimes[p.name];
+          const dotClass = p.status === 'RUNNING' ? 'srv-on' : 'srv-off';
+          const statClass= p.status === 'RUNNING' ? 'ss-on' : 'ss-off';
+          const upStr = p.status === 'RUNNING' ? `<div class="srv-uptime" id="srv-${p.name}-up">${fmtUptime(S.srvUptimes[p.name])}</div>` : '<div class="srv-uptime">--</div>';
+          c.innerHTML += `<div class="server-row"><div class="srv-dot ${dotClass}"></div><div class="srv-name">🌐 ${p.name}</div><div class="srv-port">${p.port}</div><div class="srv-status ${statClass}">${p.status}</div>${upStr}</div>`;
+        });
+      }
+    }
   } catch(e) {
     // Se a API não responder, mantém os valores anteriores
     console.warn('Stats API unreachable');
@@ -245,22 +280,30 @@ async function sendMessage(){
   S.chatHistory.push({role:'user',content:text});
   S.bobTyping=true; btn.disabled=true; showTyping();
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    // Formato OpenAI-compatible para o OpenClaw
+    const messages = [
+      {role: 'system', content: buildSystemPrompt()},
+      ...S.chatHistory.slice(-12)
+    ];
+
+    const res=await fetch(`${OPENCLAW_CONFIG.url}/v1/chat/completions`,{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization': `Bearer ${OPENCLAW_CONFIG.token}`
+      },
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:buildSystemPrompt(),
-        messages:S.chatHistory.slice(-12),
+        model: OPENCLAW_CONFIG.model,
+        messages:messages,
+        stream:false
       })
     });
     const data=await res.json();
-    const reply=data.content?.[0]?.text||'Erro ao processar resposta.';
+    const reply=data.choices?.[0]?.message?.content||'Erro ao processar resposta do OpenClaw.';
     removeTyping(); addMessage('bob',reply);
     S.chatHistory.push({role:'assistant',content:reply});
   }catch(err){
-    removeTyping(); addMessage('bob','⚠ Erro de conexão com a API. Verifica a rede.');
+    removeTyping(); addMessage('bob',`⚠ Erro: Falha ao ligar ao OpenClaw via Nginx. Verifica se o 'OpenClaw Gateway' aparece como RUNNING no painel de serviços.`);
   }
   S.bobTyping=false; btn.disabled=false;
   document.getElementById('chat-input').focus();

@@ -20,15 +20,51 @@
 </header>
 
 <div class="main">
+  <!-- BOB CHAT COLUMN -->
+  <div class="chat-wrapper" id="chat-wrapper" style="grid-area: chat">
+    <div class="chat-header" onclick="togglePanel('chat-content')" style="cursor:pointer">
+      <div class="bob-avatar">
+        <svg viewBox="0 0 40 40" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="19" fill="#061520" stroke="#00f5ff" stroke-width="1.5"/>
+          <rect x="12" y="11" width="16" height="11" rx="3" fill="#061520" stroke="#00f5ff" stroke-width="1.2"/>
+          <rect x="14" y="14" width="5" height="3" rx="1" fill="#00f5ff" opacity=".9"/>
+          <rect x="21" y="14" width="5" height="3" rx="1" fill="#00f5ff" opacity=".9"/>
+          <rect x="9" y="22" width="22" height="13" rx="4" fill="#061520" stroke="#00f5ff" stroke-width="1.2"/>
+          <rect x="14" y="25" width="12" height="5" rx="1.5" fill="#001525" stroke="#00f5ff" stroke-width=".6"/>
+          <rect x="16" y="26.5" width="8" height="2" rx="1" fill="#00f5ff" opacity=".8" class="chest-light"/>
+        </svg>
+        <div class="bob-ring"></div>
+        <div class="bob-status-dot"></div>
+      </div>
+      <div class="chat-header-info">
+        <div class="bob-name">b0b — OpenClaw Agent</div>
+        <div class="bob-sub">NODE-A · miniPC · Ollama llama3.2:3b · <span>ONLINE</span></div>
+      </div>
+      <span class="toggle-btn" id="btn-chat-content">▼</span>
+    </div>
+    <div id="chat-content">
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="chat-input-row">
+        <textarea class="chat-input" id="chat-input" rows="1"
+          placeholder="Fala com o b0b... (Enter envia, Shift+Enter nova linha)"
+          onkeydown="handleKey(event)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMessage()">ENVIAR ▶</button>
+      </div>
+      <div class="chat-hint">b0b conhece o estado do teu setup em tempo real · powered by OpenClaw Agent</div>
+    </div>
+  </div>
+
   <!-- miniPC -->
-  <div class="room">
-    <div class="room-header">
+  <div class="room" style="grid-area: nodeA">
+    <div class="room-header" onclick="togglePanel('node-a-content')" style="cursor:pointer">
       <div style="color:var(--cyan);text-shadow:var(--glow-cyan);font-family:'Orbitron',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.15em">⬡ miniPC — NODE-A</div>
       <div class="room-badges">
         <div class="badge badge-cyan">Intel N100 · 16GB</div>
         <div class="badge badge-online">ONLINE</div>
+        <span class="toggle-btn" id="btn-node-a-content">▼</span>
       </div>
     </div>
+    <div id="node-a-content">
     <div class="scene" id="scene-a">
       <div class="zone-lbl zone-work" style="color:var(--cyan)">WORK ZONE</div>
       <div class="zone-lbl zone-chill" style="color:#2a4a80">CHILL ZONE</div>
@@ -67,25 +103,25 @@
     </div>
     <!-- SERVERS -->
     <div class="servers-panel">
-      <div class="servers-title">⬡ SERVIDORES DE PROJECTO</div>
-      <div class="server-row"><div class="srv-dot srv-on"></div><div class="srv-name">🤖 OpenClaw b0b</div><div class="srv-port">:11434</div><div class="srv-status ss-on">RUNNING</div><div class="srv-uptime" id="srv-bob-up">00:00:00</div></div>
-      <div class="server-row"><div class="srv-dot srv-on"></div><div class="srv-name">🧠 Ollama API</div><div class="srv-port">:11435</div><div class="srv-status ss-on">RUNNING</div><div class="srv-uptime" id="srv-ollama-up">00:00:00</div></div>
-      <div class="server-row"><div class="srv-dot srv-idle"></div><div class="srv-name">⚙️ n8n Workflows</div><div class="srv-port">:5678</div><div class="srv-status ss-idle">IDLE</div><div class="srv-uptime" id="srv-n8n-up">00:00:00</div></div>
-      <div class="server-row"><div class="srv-dot srv-on"></div><div class="srv-name">📚 RAG / Qdrant</div><div class="srv-port">:6333</div><div class="srv-status ss-on">RUNNING</div><div class="srv-uptime" id="srv-rag-up">00:00:00</div></div>
-      <div class="server-row"><div class="srv-dot srv-on"></div><div class="srv-name">📊 AI Nexus Dashboard</div><div class="srv-port">:3000</div><div class="srv-status ss-on">RUNNING</div><div class="srv-uptime" id="srv-dash-up">00:00:00</div></div>
-      <div class="server-row"><div class="srv-dot srv-off"></div><div class="srv-name">🔍 Brave Search Proxy</div><div class="srv-port">:8080</div><div class="srv-status ss-off">STOPPED</div><div class="srv-uptime">--</div></div>
+      <div class="servers-title">⬡ SERVIÇOS DO SISTEMA</div>
+      <div id="dynamic-services"></div>
+      <div class="servers-title" style="margin-top:10px">⬡ PROJECTOS NGINX</div>
+      <div id="dynamic-servers"></div>
     </div>
+    </div> <!-- end node-a-content -->
   </div>
 
   <!-- DESKTOP -->
-  <div class="room">
-    <div class="room-header">
+  <div class="room" style="grid-area: nodeB">
+    <div class="room-header" onclick="togglePanel('node-b-content')" style="cursor:pointer">
       <div style="color:var(--green);text-shadow:var(--glow-green);font-family:'Orbitron',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.15em">⬡ DESKTOP — NODE-B</div>
       <div class="room-badges">
         <div class="badge badge-green">Ryzen 7 · 32GB · RTX</div>
         <div class="badge badge-sleep" id="b-badge">SLEEPING</div>
+        <span class="toggle-btn" id="btn-node-b-content">▼</span>
       </div>
     </div>
+    <div id="node-b-content">
     <div class="scene" id="scene-b">
       <div class="zone-lbl zone-work" style="color:var(--green)">WORK ZONE</div>
       <div class="zone-lbl zone-chill" style="color:#1a4030">CHILL ZONE</div>
@@ -137,6 +173,7 @@
         <span class="blink">⚠</span> AUTO-OFF EM <strong id="auto-off-timer">15</strong> MIN
       </div>
     </div>
+    </div> <!-- end node-b-content -->
   </div>
 
   <!-- BRIDGE -->
@@ -156,65 +193,35 @@
 <!-- BOTTOM -->
 <div class="bottom">
   <div class="panel">
-    <div class="panel-title">⬡ OLLAMA — MODELOS ATIVOS</div>
+    <div class="panel-title" onclick="togglePanel('bottom-panel-1')" style="cursor:pointer; display:flex; gap:10px;">⬡ OLLAMA — MODELOS ATIVOS<span class="toggle-btn" id="btn-bottom-panel-1">▼</span></div>
+    <div id="bottom-panel-1">
     <div class="model-row"><div class="model-dot dot-on"></div><div class="model-name">llama3.2:3b</div><div class="model-machine">NODE-A</div><div class="model-size">2.0 GB</div></div>
     <div class="model-row"><div class="model-dot dot-on"></div><div class="model-name">nomic-embed-text</div><div class="model-machine">NODE-A</div><div class="model-size">274 MB</div></div>
     <div class="model-row" style="opacity:.4"><div class="model-dot dot-off"></div><div class="model-name">mixtral:8x7b</div><div class="model-machine">NODE-B</div><div class="model-size">26 GB</div></div>
     <div class="model-row" style="opacity:.4"><div class="model-dot dot-off"></div><div class="model-name">deepseek-r1:14b</div><div class="model-machine">NODE-B</div><div class="model-size">9.0 GB</div></div>
+    </div>
   </div>
   <div class="panel">
-    <div class="panel-title">☁ OLLAMA CLOUD — LIMITES</div>
+    <div class="panel-title" onclick="togglePanel('bottom-panel-2')" style="cursor:pointer; display:flex; gap:10px;">☁ OLLAMA CLOUD — LIMITES<span class="toggle-btn" id="btn-bottom-panel-2">▼</span></div>
+    <div id="bottom-panel-2">
     <div class="api-row"><div class="api-hdr"><span class="api-name">Requests / Hora</span><span class="api-count" id="ol-rph">-- / 100</span></div><div class="api-track"><div class="api-fill b-cyan" id="ol-rph-b" style="width:0%"></div></div><div class="api-reset-lbl">Reset em: <span id="ol-rph-reset">--:--</span></div></div>
     <div class="api-row"><div class="api-hdr"><span class="api-name">Requests / Dia</span><span class="api-count" id="ol-rpd">-- / 1000</span></div><div class="api-track"><div class="api-fill b-green" id="ol-rpd-b" style="width:0%"></div></div><div class="api-reset-lbl">Reset em: <span id="ol-rpd-reset">--:--:--</span></div></div>
     <div class="api-row"><div class="api-hdr"><span class="api-name">Tokens / Min</span><span class="api-count" id="ol-tpm">-- / 10k</span></div><div class="api-track"><div class="api-fill b-orange" id="ol-tpm-b" style="width:0%"></div></div><div class="api-reset-lbl">Janela contínua</div></div>
+    </div>
   </div>
   <div class="panel">
-    <div class="panel-title">🔍 BRAVE SEARCH — LIMITES</div>
+    <div class="panel-title" onclick="togglePanel('bottom-panel-3')" style="cursor:pointer; display:flex; gap:10px;">🔍 BRAVE SEARCH — LIMITES<span class="toggle-btn" id="btn-bottom-panel-3">▼</span></div>
+    <div id="bottom-panel-3">
     <div class="api-row"><div class="api-hdr"><span class="api-name">Queries / Mês (Free)</span><span class="api-count" id="bv-rpm">-- / 2000</span></div><div class="api-track"><div class="api-fill b-cyan" id="bv-rpm-b" style="width:0%"></div></div><div class="api-reset-lbl">Reset: dia 1 do mês</div></div>
     <div class="api-row"><div class="api-hdr"><span class="api-name">Queries / Segundo</span><span class="api-count" id="bv-rps">-- / 1</span></div><div class="api-track"><div class="api-fill b-green" id="bv-rps-b" style="width:0%"></div></div><div class="api-reset-lbl">Rate limited</div></div>
     <div class="divider"></div>
     <div style="font-size:.62rem;color:var(--dim)">RESTANTES ESTE MÊS</div>
     <div class="big-number" id="bv-remaining">1 847</div>
+    </div>
   </div>
 </div>
 
-<!-- BOB CHAT -->
-<div class="chat-section">
-  <div class="chat-wrapper">
-    <div class="chat-header">
-      <div class="bob-avatar">
-        <svg viewBox="0 0 40 40" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="20" cy="20" r="19" fill="#061520" stroke="#00f5ff" stroke-width="1.5"/>
-          <rect x="12" y="11" width="16" height="11" rx="3" fill="#061520" stroke="#00f5ff" stroke-width="1.2"/>
-          <rect x="14" y="14" width="5" height="3" rx="1" fill="#00f5ff" opacity=".9"/>
-          <rect x="21" y="14" width="5" height="3" rx="1" fill="#00f5ff" opacity=".9"/>
-          <rect x="9" y="22" width="22" height="13" rx="4" fill="#061520" stroke="#00f5ff" stroke-width="1.2"/>
-          <rect x="14" y="25" width="12" height="5" rx="1.5" fill="#001525" stroke="#00f5ff" stroke-width=".6"/>
-          <rect x="16" y="26.5" width="8" height="2" rx="1" fill="#00f5ff" opacity=".8" class="chest-light"/>
-        </svg>
-        <div class="bob-ring"></div>
-        <div class="bob-status-dot"></div>
-      </div>
-      <div class="chat-header-info">
-        <div class="bob-name">b0b — OpenClaw Agent</div>
-        <div class="bob-sub">NODE-A · miniPC · Ollama llama3.2:3b · <span>ONLINE</span></div>
-      </div>
-      <div class="chat-hdr-badges">
-        <div class="badge badge-cyan">OPENCLAW</div>
-        <div class="badge" style="border-color:var(--purple);color:var(--purple)">AI POWERED</div>
-      </div>
-    </div>
-    <div class="chat-messages" id="chat-messages"></div>
-    <div class="chat-input-row">
-      <textarea class="chat-input" id="chat-input" rows="1"
-        placeholder="Fala com o b0b... (Enter envia, Shift+Enter nova linha)"
-        onkeydown="handleKey(event)"></textarea>
-      <button class="send-btn" id="send-btn" onclick="sendMessage()">ENVIAR ▶</button>
-    </div>
-    <div class="chat-hint">b0b conhece o estado do teu setup em tempo real · powered by Anthropic API</div>
-  </div>
-</div>
-
+<script src="config.js"></script>
 <script src="script.js"></script>
 
 </body>

@@ -35,7 +35,15 @@
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
   .clock { color:var(--dim); font-size:0.68rem; letter-spacing:0.1em; }
 
-  .main { display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:14px; max-width:1400px; margin:0 auto; }
+  .main { 
+    display:grid; 
+    grid-template-areas: 
+      "chat nodeA nodeB"
+      "bridge bridge bridge";
+    grid-template-columns: repeat(3, minmax(0, 1fr)); 
+    gap:14px; padding:14px; 
+    max-width:1800px; margin:0 auto; 
+  }
 
   .room { background:var(--room-bg); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
   .room-header { display:flex; align-items:center; justify-content:space-between;
@@ -150,7 +158,7 @@
   .blink { animation:blink-text 1s steps(1) infinite; }
 
   /* BRIDGE */
-  .bridge { grid-column:1/-1; display:flex; align-items:center; gap:14px; padding:8px 14px;
+  .bridge { grid-area: bridge; display:flex; align-items:center; gap:14px; padding:8px 14px;
     background:var(--panel); border:1px solid var(--border); border-radius:8px; font-size:0.68rem; }
   .bridge-node { color:var(--dim); min-width:60px; }
   .bridge-line { flex:1; height:2px; position:relative; overflow:hidden;
@@ -194,8 +202,7 @@
   .divider { border-top:1px solid var(--border); margin:10px 0; }
 
   /* BOB CHAT */
-  .chat-section { padding:0 14px 20px; max-width:1400px; margin:0 auto; }
-  .chat-wrapper { background:var(--panel); border:1px solid #1a2a50; border-radius:12px; overflow:hidden; box-shadow:0 0 40px #00f5ff08; }
+  .chat-wrapper { grid-area: chat; background:var(--panel); border:1px solid #1a2a50; border-radius:12px; overflow:hidden; box-shadow:0 0 40px #00f5ff08; min-width:0; }
   .chat-header { display:flex; align-items:center; gap:14px; padding:12px 18px; background:#050a14; border-bottom:1px solid var(--border); }
   .bob-avatar { width:40px; height:40px; flex-shrink:0; position:relative; }
   .bob-ring { position:absolute; inset:-3px; border-radius:50%; border:2px solid var(--cyan); box-shadow:var(--glow-cyan); opacity:.7; }
@@ -238,3 +245,8 @@
   .chat-hint { font-size:.58rem; color:var(--dim); padding:0 18px 10px; text-align:center; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:none} }
   .msg { animation:fadeIn .3s ease; }
+
+  .collapsed-content { display:none !important; }
+  .toggle-btn { cursor:pointer; color:var(--dim); font-size:0.7rem; padding:0 5px; margin-left:auto; transition:color 0.2s; }
+  .toggle-btn:hover { color:var(--cyan); }
+  .room-header, .panel-title, .chat-header { position:relative; z-index:2; }
